@@ -1,0 +1,19 @@
+alias: Send to Galaxy S24U Clipboard (Webhook)
+description: ''
+triggers:
+  - trigger: webhook
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+    webhook_id: -1W7q56JzQydahcNbF0mXstsX
+conditions: []
+actions:
+  - action: notify.send_message
+    metadata: {}
+    target:
+      device_id: 43ce35e609528e070e688e8d5faabb19
+    data:
+      message: '{{ trigger.json.text }}'
+      title: CLIPBOARD_SYNC
+mode: single

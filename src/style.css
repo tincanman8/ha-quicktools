@@ -1,0 +1,58 @@
+/* 1. Container Placement */
+#send-to-ha-btn-wrapper {
+    margin-left: 0 !important;
+    margin-right: 8px !important;
+    display: inline-block !important;
+}
+
+/* 2. The Button - pill SVG background */
+#send-to-ha-btn-wrapper button {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgOTAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMzZDBhMGEiLz48c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iIzJhMGQxYSIvPjxzdG9wIG9mZnNldD0iNTUlIiBzdG9wLWNvbG9yPSIjMWExMDMwIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWMyOTUxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSI5MCIgcng9IjQ1IiByeT0iNDUiIGZpbGw9InVybCgjZykiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMi41LDE3LjUpIHNjYWxlKDEuNzE4NzUpIj48cGF0aCBmaWxsPSIjRkYwMDAwIiBkPSJNMjkuNDEsOS4yNmEzLjUsMy41LDAsMCwwLTIuNDctMi40N0MyNC43Niw2LjIsMTYsNi4yLDE2LDYuMnMtOC43NiwwLTEwLjk0LjU5QTMuNSwzLjUsMCwwLDAsMi41OSw5LjI2LDM2LjEzLDM2LjEzLDAsMCwwLDIsMTZhMzYuMTMsMzYuMTMsMCwwLDAsLjU5LDYuNzQsMy41LDMuNSwwLDAsMCwyLjQ3LDIuNDdDNy4yNCwyNS44LDE2LDI1LjgsMTYsMjUuOHM4Ljc2LDAsMTAuOTQtLjU5YTMuNSwzLjUsMCwwLDAsMi40Ny0yLjQ3QTM2LjEzLDM2LjEzLDAsMCwwLDMwLDE2LDM2LjEzLDM2LjEzLDAsMCwwLDI5LjQxLDkuMjZaTTEzLjIsMjAuMlYxMS44TDIwLjQ3LDE2WiIvPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMjUuMjUsMjAuMjUpIHNjYWxlKDIuMDYyNSkiPjxwYXRoIGZpbGw9IiM0MUJERjUiIGQ9Ik0xMS45OTIyIDEuMzk0NWEuNzA0MS43MDQxIDAgMDAtLjQ5OC4yMTFMLjE2MjEgMTMuMDk3N0EuNTYzNC41NjM0IDAgMDAwIDEzLjQ5NGEuNTY3LjU2NyAwIDAwLjU2NjQuNTY2NEgyLjY3djguMDc0M2MwIC4yNjAzLjIxMDQuNDcwNy40NzA3LjQ3MDdoNy45NDczdi0zLjY4MzZMOC4wMzcgMTUuODY3MmEyLjQyIDIuNDIgMCAwMS0uOTQ3My4xOTMzYy0xLjMzNzkgMC0yLjQyMTgtMS4wODY4LTIuNDIxOC0yLjQyNTcgMC0xLjMzOSAxLjA4NC0yLjQyMzkgMi40MjE4LTIuNDIzOSAxLjMzOCAwIDIuNDIyIDEuMDg1IDIuNDIyIDIuNDIzOSAwIC4zMzU5LS4wNjguNjU2My0uMTkxNS45NDcybDEuNzY3NiAxLjc2NzZ2LTUuMzc1QzEwLjIgMTAuNjE1IDkuNTcyMyA5Ljc0NCA5LjU3MjMgOC43MjY2YzAtMS4zMzkgMS4wODU5LTIuNDI1OCAyLjQyMzgtMi40MjU4IDEuMzM4IDAgMi40MjE5IDEuMDg2OCAyLjQyMTkgMi40MjU4IDAgMS4wMTc0LS42MjU5IDEuODg4NC0xLjUxMzcgMi4yNDh2NS4zNzVsMS43NjU2LTEuNzY3NmEyLjQyMDUgMi40MjA1IDAgMDEtLjE5MTQtLjk0NzJjMC0xLjMzOSAxLjA4Ni0yLjQyMzkgMi40MjM4LTIuNDIzOSAxLjMzOCAwIDIuNDIyIDEuMDg1IDIuNDIyIDIuNDIzOSAwIDEuMzM4OS0xLjA4NCAyLjQyNTctMi40MjIgMi40MjU3YTIuNDIgMi40MiAwIDAxLS45NDcyLS4xOTMzbC0zLjA1MDggMy4wNTQ3djMuNjgzNmg3Ljk0NzNhLjQ3MDIuNDcwMiAwIDAwLjQ3MDctLjQ3MDd2LTguMDc0M2gyLjExMTNhLjU2ODYuNTY4NiAwIDAwLjM5NjUtLjE2MmMuMjIzMy0uMjE4NS4yMjYyLS41Nzc1LjAwNzgtLjgwMDhsLTIuNTE1Ni0yLjU3MjNWNi40NzA3YzAtLjI2MDMtLjIxMDQtLjQ3MjctLjQ3MDctLjQ3MjdoLTEuOTY0OWMtLjI2MDMgMC0uNDcwNy4yMTI0LS40NzA3LjQ3Mjd2MS4xMDM1TDEyLjUgMS42MDM1YS43MDU2LjcwNTYgMCAwMC0uNTA3OC0uMjA5em0uMDAzOSA2LjM2MTRjLS41MzUyIDAtLjk2ODguNDM1MS0uOTY4OC45NzA3IDAgLjUzNTUuNDMzNi45Njg3Ljk2ODguOTY4N2EuOTY4My45NjgzIDAgMDAuOTY4Ny0uOTY4N2MwLS41MzU2LS40MzM1LS45NzA3LS45Njg3LS45NzA3ek03LjA4OTggMTIuNjY2YS45NjgzLjk2ODMgMCAwMC0uOTY4Ny45Njg4YzAgLjUzNTUuNDMzNi45NzA3Ljk2ODcuOTcwNy41MzUyIDAgLjk2ODgtLjQzNTIuOTY4OC0uOTcwN2EuOTY4My45NjgzIDAgMDAtLjk2ODgtLjk2ODh6bTkuODEyNSAwYy0uNTM1MSAwLS45NzA3LjQzMzItLjk3MDcuOTY4OCAwIC41MzU1LjQzNTYuOTcwNy45NzA3Ljk3MDcuNTM1MiAwIC45Njg4LS40MzUyLjk2ODgtLjk3MDdhLjk2ODMuOTY4MyAwIDAwLS45Njg4LS45Njg4WiIvPjwvZz48L3N2Zz4=") !important;
+    background-color: transparent !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+    width: 80px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    transition: opacity 0.2s cubic-bezier(0.05, 0, 0, 1) !important;
+}
+
+#send-to-ha-btn-wrapper button:hover {
+    background-color: transparent !important;
+    opacity: 0.85 !important;
+}
+
+/* Hide icon and text - logos are in background image */
+#send-to-ha-btn-wrapper .ytSpecButtonShapeNextIcon,
+#send-to-ha-btn-wrapper .ytSpecButtonShapeNextButtonTextContent {
+    display: none !important;
+}
+
+/* 3. The Popup Menu - Compact Version */
+#ha-timestamp-menu {
+    position: fixed !important;
+    background-color: #232a35 !important;
+    border: 1px solid #4a5a7a !important;
+    border-radius: 8px !important;
+    padding: 4px 0 !important;
+    z-index: 20000 !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8) !important;
+    min-width: 170px !important;
+    width: auto !important;
+}
+
+/* 4. Menu Items - Compact & Dense */
+#ha-timestamp-menu .ha-menu-item {
+    padding: 8px 14px !important;
+    color: #e0eaff !important;
+    font-family: "Roboto", Arial, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    display: block !important;
+}
+
+#ha-timestamp-menu .ha-menu-item:hover {
+    background-color: rgba(100, 150, 255, 0.2) !important;
+}

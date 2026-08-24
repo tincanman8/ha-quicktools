@@ -1,0 +1,37 @@
+alias: Cast to SmartTube from Webhook
+description: ''
+triggers:
+  - trigger: webhook
+    allowed_methods:
+      - POST
+      - PUT
+    local_only: true
+    webhook_id: -xJ8-jc3CsddRskLGtGVPL3Gx
+conditions: []
+actions:
+  - if:
+      - condition: device
+        device_id: c1e3d0ce505ecc3b135fe0715b682a16
+        domain: media_player
+        entity_id: b07f68e5b04390c665db3caa4f014adc
+        type: is_off
+    then:
+      - type: turn_on
+        device_id: c1e3d0ce505ecc3b135fe0715b682a16
+        entity_id: e2bff6d20ba6f80492d22f221ea1d22c
+        domain: remote
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 3
+          milliseconds: 0
+  - action: androidtv.adb_command
+    target:
+      device_id: e10b09e9943de53d7720d128014af0d5
+    data:
+      command: >-
+        {% set vid = trigger.data.url |
+        regex_replace('^.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*)(?:.*(&t=[0-9]*))?.*','\\1\\2')
+        %}adb shell am start -a android.intent.action.VIEW -d
+        "https://www.youtube.com/watch?v={{ vid }}" org.smarttube.beta
+mode: single

@@ -1,0 +1,12 @@
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Extension Build Bundles & Archives
+*.zip
+*.xpi
+*.crx
+dist/
+build/

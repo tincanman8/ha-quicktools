@@ -1,0 +1,64 @@
+{
+  "manifest_version": 3,
+  "name": "HA QuickTools",
+  "version": "1.0.0",
+  "description": "Send YouTube links, text, links, or images directly to Home Assistant and Mobile Devices.",
+  "permissions": [
+    "storage",
+    "contextMenus"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ha-quicktools@myextensions.dev",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": ["websiteContent"],
+        "optional": []
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
+    }
+  },
+  "icons": {
+    "48": "../assets/icons/icon_48.png",
+    "96": "../assets/icons/icon_96.png",
+    "128": "../assets/icons/icon_128.png"
+  },
+  "action": {
+    "default_icon": "../assets/icons/icon.svg",
+    "default_title": "HA QuickTools"
+  },
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "*://*.youtu.be/*",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["style.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icon.svg", "icon_48.png", "icon_96.png", "icon_128.png"],
+      "matches": ["*://*.youtube.com/*"]
+    }
+  ]
+}

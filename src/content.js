@@ -8,6 +8,15 @@ const createMenu = (buttonElement) => {
   const videoElement = document.querySelector('video');
   const currentTime = videoElement ? Math.floor(videoElement.currentTime) : 0;
 
+  // Helper to format timestamp into MM:SS or HH:MM:SS
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    const pad = (n) => String(n).padStart(2, '0');
+    return hrs > 0 ? `${hrs}:${pad(mins)}:${pad(secs)}` : `${pad(mins)}:${pad(secs)}`;
+  };
+
   const menu = document.createElement('div');
   menu.id = 'ha-timestamp-menu';
   
@@ -19,114 +28,145 @@ const createMenu = (buttonElement) => {
   menu.style.padding = '8px 0';
   menu.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.5)';
   menu.style.zIndex = '9999';
-  menu.style.minWidth = '220px';
+  menu.style.minWidth = '230px';
   menu.style.fontFamily = 'Roboto, Arial, sans-serif';
 
-  // Centered Header Element
+  // Centered Header Title
   const header = document.createElement('div');
-  header.textContent = 'HA QuickTools';
   header.style.padding = '6px 16px 8px 16px';
   header.style.fontSize = '12px';
   header.style.fontWeight = '600';
   header.style.color = '#aaaaaa';
   header.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
   header.style.marginBottom = '4px';
-  header.style.textTransform = 'uppercase';
-  header.style.letterSpacing = '0.5px';
   header.style.textAlign = 'center';
+  header.style.letterSpacing = '0.5px';
+  header.textContent = 'HA QUICKTOOLS';
   menu.appendChild(header);
 
+  let checkbox = null;
+
   // Dispatcher function
-  const send = (target, includeTimestamp) => {
+  const send = (type, payloadType) => {
     let url = window.location.href.split('&t=')[0].split('?t=')[0];
+    const includeTimestamp = checkbox ? checkbox.checked : false;
+
     if (includeTimestamp && currentTime > 0) {
       const separator = url.includes('?') ? '&' : '?';
       url += `${separator}t=${currentTime}s`;
     }
     
-    const messageType = target === 'PHONE' ? "SEND_TO_PHONE" : "SEND_TO_HA";
-    browser.runtime.sendMessage({ type: messageType, url: url });
+    if (type === 'TV') {
+      browser.runtime.sendMessage({ type: "SEND_TO_HA", url: url });
+    } else if (type === 'PHONE') {
+      browser.runtime.sendMessage({ 
+        type: "SEND_TO_PHONE", 
+        url: url, 
+        payloadType: payloadType 
+      });
+    }
     menu.remove();
   };
 
   // Helper to build menu row
-  const createOptionRow = (label, target) => {
+  const createOptionRow = (label, icon, type, payloadType, isSubitem = false) => {
     const row = document.createElement('div');
     row.className = 'ha-menu-row';
     row.style.display = 'flex';
     row.style.alignItems = 'center';
-    row.style.padding = '10px 16px';
+    row.style.padding = isSubitem ? '8px 16px 8px 24px' : '10px 16px';
     row.style.cursor = 'pointer';
-    row.style.color = '#ffffff';
-    row.style.fontSize = '14px';
+    row.style.color = isSubitem ? '#cccccc' : '#ffffff';
+    row.style.fontSize = isSubitem ? '13px' : '14px';
 
-    // Center text when at 0s, align space-between when timestamp checkbox exists
-    if (currentTime > 0) {
-      row.style.justifyContent = 'space-between';
-    } else {
-      row.style.justifyContent = 'center';
-    }
-
-    // Hover effect
     row.onmouseenter = () => { row.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'; };
     row.onmouseleave = () => { row.style.backgroundColor = 'transparent'; };
+
+    if (icon) {
+      const iconSpan = document.createElement('span');
+      iconSpan.textContent = icon;
+      iconSpan.style.marginRight = '10px';
+      iconSpan.style.width = '16px';
+      iconSpan.style.textAlign = 'center';
+      row.appendChild(iconSpan);
+    }
 
     const textSpan = document.createElement('span');
     textSpan.textContent = label;
     textSpan.style.fontWeight = '400';
-    if (currentTime > 0) {
-      textSpan.style.flexGrow = '1';
-    } else {
-      textSpan.style.textAlign = 'center';
-    }
-
     row.appendChild(textSpan);
 
-    // Only append timestamp checkbox if video is past 0s
-    let checkbox = null;
-    if (currentTime > 0) {
-      const labelContainer = document.createElement('label');
-      labelContainer.style.display = 'flex';
-      labelContainer.style.alignItems = 'center';
-      labelContainer.style.fontSize = '13px';
-      labelContainer.style.cursor = 'pointer';
-      labelContainer.style.marginLeft = '12px';
-      labelContainer.style.color = '#cccccc';
-
-      checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.style.marginRight = '6px';
-      checkbox.style.cursor = 'pointer';
-      checkbox.style.accentColor = '#3ea6ff';
-
-      labelContainer.appendChild(checkbox);
-      labelContainer.appendChild(document.createTextNode(`at ${currentTime}s`));
-      labelContainer.onclick = (e) => e.stopPropagation();
-
-      row.appendChild(labelContainer);
-    }
-
-    // Row Click Handler
     row.onclick = (e) => {
       e.stopPropagation();
-      send(target, checkbox ? checkbox.checked : false);
+      send(type, payloadType);
     };
 
     return row;
   };
 
-  const rowTV = createOptionRow('Play on TV', 'TV');
-  const rowPhone = createOptionRow('Send to phone', 'PHONE');
-
+  // 1. Play on TV
+  const rowTV = createOptionRow('Play on TV', null, 'TV', null);
   menu.appendChild(rowTV);
-  menu.appendChild(rowPhone);
+
+  // 2. Submenu Header for Phone
+  const phoneSectionHeader = document.createElement('div');
+  phoneSectionHeader.textContent = 'SEND TO PHONE';
+  phoneSectionHeader.style.padding = '10px 16px 4px 16px';
+  phoneSectionHeader.style.fontSize = '11px';
+  phoneSectionHeader.style.fontWeight = '600';
+  phoneSectionHeader.style.color = '#888888';
+  phoneSectionHeader.style.letterSpacing = '0.5px';
+  menu.appendChild(phoneSectionHeader);
+
+  // 3. Submenu Items
+  const rowPhonePlay = createOptionRow('Play Video', '▶', 'PHONE', 'youtubevideo', true);
+  const rowPhoneCopy = createOptionRow('Copy URL to Clipboard', '📋', 'PHONE', 'link', true);
+
+  menu.appendChild(rowPhonePlay);
+  menu.appendChild(rowPhoneCopy);
+
+  // 4. Footer Section (Timestamp Checkbox)
+  if (currentTime > 0) {
+    const footer = document.createElement('div');
+    footer.style.borderTop = '1px solid rgba(255, 255, 255, 0.1)';
+    footer.style.marginTop = '6px';
+    footer.style.padding = '8px 16px 2px 16px';
+    footer.style.display = 'flex';
+    footer.style.justifyContent = 'center';
+
+    const labelContainer = document.createElement('label');
+    labelContainer.style.display = 'flex';
+    labelContainer.style.alignItems = 'center';
+    labelContainer.style.fontSize = '12px';
+    labelContainer.style.cursor = 'pointer';
+    labelContainer.style.color = '#3ea6ff';
+
+    checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = true;
+    checkbox.style.webkitAppearance = 'checkbox';
+    checkbox.style.appearance = 'checkbox';
+    checkbox.style.display = 'inline-block';
+    checkbox.style.width = '14px';
+    checkbox.style.height = '14px';
+    checkbox.style.margin = '0 6px 0 0';
+    checkbox.style.cursor = 'pointer';
+    checkbox.style.accentColor = '#3ea6ff';
+
+    labelContainer.appendChild(checkbox);
+    labelContainer.appendChild(document.createTextNode(`Include timestamp (${formatTime(currentTime)})`));
+    labelContainer.onclick = (e) => e.stopPropagation();
+
+    footer.appendChild(labelContainer);
+    menu.appendChild(footer);
+  }
 
   document.body.appendChild(menu);
 
   // Position Menu above Button
   const rect = buttonElement.getBoundingClientRect();
   menu.style.left = `${rect.left}px`;
-  menu.style.top = `${rect.top - (currentTime > 0 ? 120 : 110)}px`;
+  menu.style.top = `${rect.top - (currentTime > 0 ? 195 : 165)}px`;
 
   // Close Menu on Outside Click
   const closeMenu = (e) => {
@@ -157,7 +197,6 @@ const injectButton = () => {
   host.appendChild(button);
   viewModel.appendChild(host);
 
-  // Always show menu on click regardless of timestamp
   button.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();

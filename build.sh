@@ -57,12 +57,14 @@ cd src
 zip -q -r "../$BUILD_DIR/$ZIP_NAME" .
 cd ..
 
-# 2. Append assets directory while preserving hierarchy
-if [ -d "assets" ]; then
-    echo "🎨 Appending assets/ folder..."
+# 2. Check for assets directory (prefer src/assets, fall back to root assets/)
+if [ -d "src/assets" ]; then
+    echo "🎨 Verified assets/ located inside src/ (already packaged)."
+elif [ -d "assets" ]; then
+    echo "🎨 Appending root assets/ folder..."
     zip -q -r "$BUILD_DIR/$ZIP_NAME" assets/
 else
-    echo "⚠️  Warning: assets/ folder not found. Skipping."
+    echo "⚠️  Warning: assets/ folder not found in src/ or root. Skipping."
 fi
 
 # 3. Copy this build script into the build directory for reference

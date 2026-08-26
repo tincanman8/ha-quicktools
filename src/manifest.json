@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "HA QuickTools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Send YouTube links, text, links, or images directly to Home Assistant and Mobile Devices.",
   "permissions": [
     "storage",
@@ -21,12 +21,12 @@
     }
   },
   "icons": {
-    "48": "../assets/icons/icon_48.png",
-    "96": "../assets/icons/icon_96.png",
-    "128": "../assets/icons/icon_128.png"
+    "48": "assets/icons/icon_48.png",
+    "96": "assets/icons/icon_96.png",
+    "128": "assets/icons/icon_128.png"
   },
   "action": {
-    "default_icon": "../assets/icons/icon.svg",
+    "default_icon": "assets/icons/icon.svg",
     "default_title": "HA QuickTools"
   },
   "host_permissions": [

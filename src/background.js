@@ -12,7 +12,7 @@ const createMenus = () => {
     browser.contextMenus.create({
       id: "action-copy-text",
       parentId: "ha-quicktools-parent",
-      title: "Copy Selected Text to Phone",
+      title: "Copy Selected Text to Phone Clipboard",
       contexts: ["selection"]
     });
 
@@ -29,16 +29,30 @@ const createMenus = () => {
         "*://www.youtu.be/*"
       ]
     });
+	
+	// 3. YouTube Links -> Play on Phone
+    browser.contextMenus.create({
+      id: "action-play-phone",
+      parentId: "ha-quicktools-parent",
+      title: "Play Video on Phone",
+      contexts: ["link"],
+      targetUrlPatterns: [
+        "*://www.youtube.com/watch?v=*",
+        "*://youtube.com/watch?v=*",
+        "*://youtu.be/*",
+        "*://www.youtu.be/*"
+      ]
+    });
 
-    // 3. Standard Links (Shows up for non-YouTube links)
+    // 4. Standard Links (Shows up for non-YouTube links)
     browser.contextMenus.create({
       id: "action-copy-link",
       parentId: "ha-quicktools-parent",
-      title: "Copy Link URL to Phone",
+      title: "Copy Link URL to Phone Clipboard",
       contexts: ["link"]
     });
 
-    // 4. Image Data
+    // 5. Image Data
     browser.contextMenus.create({
       id: "action-copy-img",
       parentId: "ha-quicktools-parent",
@@ -58,18 +72,23 @@ const isYouTubeUrl = (url) => {
 };
 
 // Send payload to HA Phone Webhook
-const sendToPhoneClipboard = (payloadData) => {
+const sendToPhone = (payloadData, payloadType = "text") => {
   browser.storage.sync.get(['haHost', 'clipWebhookId']).then((result) => {
     const haHost = result.haHost || 'http://homeassistant.home:8123';
     const webhookId = result.clipWebhookId || '-1W7q56JzQydahcNbF0mXstsX';
     const webhookUrl = `${haHost}/api/webhook/${webhookId}`;
 
+    const payload = {
+      payloadType: payloadType,
+      payloadData: payloadData
+    };
+
     fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: payloadData })
+      body: JSON.stringify(payload)
     })
-    .then(() => console.log("Payload dispatched to HA phone webhook."))
+    .then(() => console.log(`Payload (${payloadType}) dispatched to HA phone webhook.`))
     .catch(err => console.error("Phone Sync fetch failed:", err));
   });
 };
@@ -93,39 +112,6 @@ const sendYouTubeToTV = (videoUrl) => {
   });
 };
 
-// Convert Image URL directly to base64 Data URI
-const fetchAndSendImage = (srcUrl) => {
-  fetch(srcUrl, { mode: 'cors' })
-    .then(response => response.blob())
-    .then(blob => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        // Force header if reader returns plain octet-stream
-        let result = reader.result;
-        if (result.startsWith('data:application/octet-stream') || result.startsWith('data:binary/octet-stream')) {
-          result = result.replace(/^data:[^;]+;/, 'data:image/png;');
-        }
-        sendToPhoneClipboard(result);
-      };
-      reader.readAsDataURL(blob);
-    })
-    .catch(() => {
-      // Offscreen canvas fallback if direct fetch hits CORS headers
-      const img = new Image();
-      img.crossOrigin = 'Anonymous';
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        sendToPhoneClipboard(canvas.toDataURL('image/png'));
-      };
-      img.onerror = () => sendToPhoneClipboard(srcUrl);
-      img.src = srcUrl;
-    });
-};
-
 // Handle Context Menu Clicks
 browser.contextMenus.onClicked.addListener((info) => {
   const cleanLink = info.linkUrl ? info.linkUrl.split('&t=')[0].split('?t=')[0] : null;
@@ -136,24 +122,29 @@ browser.contextMenus.onClicked.addListener((info) => {
       break;
 
     case "action-copy-link":
-      if (cleanLink) sendToPhoneClipboard(cleanLink);
+      if (cleanLink) sendToPhone(cleanLink, "link");
       break;
 
     case "action-copy-text":
-      if (info.selectionText) sendToPhoneClipboard(info.selectionText);
+      if (info.selectionText) sendToPhone(info.selectionText, "text");
       break;
 
     case "action-copy-img":
-	  if (info.srcUrl) sendToPhoneClipboard(info.srcUrl);
+	  if (info.srcUrl) sendToPhone(info.srcUrl, "image");
+	  break;
+
+    case "action-play-phone":
+	  if (cleanLink) sendToPhone(cleanLink, "youtubevideo");
 	  break;
   }
 });
 
-// Listener for YouTube Overlay button in content script
+// Updated background listener to accept payloadType dynamically from content.js
 browser.runtime.onMessage.addListener((message) => {
   if (message.type === "SEND_TO_HA") {
     sendYouTubeToTV(message.url);
   } else if (message.type === "SEND_TO_PHONE") {
-    sendToPhoneClipboard(message.url);
+    const payloadType = message.payloadType || "youtubevideo";
+    sendToPhone(message.url, payloadType);
   }
 });

@@ -1,0 +1,12 @@
+[Sunshine]
+Username=your_sunshine_user
+Password=your_sunshine_pass
+
+[Moonlight]
+HostUUID=12345678-1234-1234-1234-123456789abc
+HostName=MY-DESKTOP
+
+[HomeAssistant]
+BaseURL=http://homeassistant.local:8123
+PhoneClipboardWebhookID=your_phone_webhook_id
+TVMonitorWebhookID=your_tv_monitor_webhook_id

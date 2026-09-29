@@ -4,6 +4,9 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Local Configuration & Credentials
+companion/AHK/config.ini
+
 # Extension Build Bundles & Archives
 *.zip
 *.xpi
